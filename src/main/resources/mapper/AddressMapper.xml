@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.AddressMapper">
+
+    <insert id="insert">
+        INSERT INTO address(uid,name,content,status,phone,ctime) VALUES(#{uid},#{name},#{content},#{status},#{phone},#{ctime})
+    </insert>
+    <update id="updateNonDef">
+        update address  set status=1 where uid=#{uid}
+    </update>
+    <update id="updateDefByAdsid">
+        update address set status=0 where adsid=#{adsid}
+    </update>
+    <delete id="deleteByAdsid">
+        delete from address where adsid=#{adsid}
+    </delete>
+    <select id="countByUid" resultType="java.lang.Integer">
+        SELECT count(*) from address where uid=#{uid}
+    </select>
+    <select id="findByUid" resultType="com.cy.store.entity.Address">
+        select * from address where uid=#{uid} order by status, ctime
+    </select>
+    <select id="findByAdsid" resultType="com.cy.store.entity.Address">
+        select * from address where adsid=#{adsid}
+    </select>
+    <select id="findLastAddress" resultType="com.cy.store.entity.Address">
+        select * from address where uid=#{uid} order by ctime limit 0,1
+    </select>
+
+</mapper>

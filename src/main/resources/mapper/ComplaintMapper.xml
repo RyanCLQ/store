@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.ComplaintMapper">
+
+    <insert id="insert">
+        INSERT INTO complaint(oid,reason,img,status,ctime) VALUES(#{oid},#{reason},#{img},#{status},#{ctime})
+    </insert>
+    <update id="setHandled">
+        update complaint set status=1 where cptid=#{cptid}
+    </update>
+    <select id="findAllComplaint" resultType="com.cy.store.entity.Complaint">
+        select * from complaint order by status , ctime desc
+    </select>
+    <select id="findByCptid" resultType="com.cy.store.entity.Complaint">
+        select * from complaint where cptid=#{cptid}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.OrdersMapper">
+
+    <insert id="insert">
+        INSERT INTO orders(gid,sellid,buyid,name,content,price,phone,status,ctime,tag) VALUES(#{gid},#{sellid},#{buyid},#{name},#{content},#{price},#{phone},#{status},#{ctime},#{tag})
+    </insert>
+    <update id="setDelivered">
+        update orders set status = 1 where oid = #{oid}
+    </update>
+    <update id="setReceived">
+        update orders set status = 2 where oid = #{oid}
+    </update>
+    <update id="setInComplaint">
+        update orders set status = 3 where oid = #{oid}
+    </update>
+    <update id="setRefund">
+         update orders set status = 4 where oid = #{oid}
+    </update>
+    <select id="findByGid" resultType="com.cy.store.entity.Orders">
+        select * from orders where gid = #{gid}
+    </select>
+    <select id="findOrdersVOBySellid" resultType="com.cy.store.vo.OrdersVO">
+          select  orders.oid,
+                orders.sellid,
+                orders.buyid,
+                orders.name,
+                orders.phone,
+                orders.content,
+                orders.gid,
+                orders.price,
+                orders.status,
+                orders.ctime,
+                orders.tag,
+                goods.gname,
+                goods.img
+                from orders left join goods on orders.gid = goods.gid
+                where orders.sellid=#{sellid}
+                order by orders.ctime desc
+    </select>
+    <select id="findOrdersVOByBuyid" resultType="com.cy.store.vo.OrdersVO">
+        select  orders.oid,
+                orders.sellid,
+                orders.buyid,
+                orders.name,
+                orders.phone,
+                orders.content,
+                orders.gid,
+                orders.price,
+                orders.status,
+                orders.ctime,
+                orders.tag,
+                goods.gname,
+                goods.img
+                from orders left join goods on orders.gid = goods.gid
+                where orders.buyid=#{buyid}
+                order by orders.ctime desc
+    </select>
+    <select id="findOrdersVOByOid" resultType="com.cy.store.vo.OrdersVO">
+         select  orders.oid,
+                orders.sellid,
+                orders.buyid,
+                orders.name,
+                orders.phone,
+                orders.content,
+                orders.gid,
+                orders.price,
+                orders.status,
+                orders.ctime,
+                orders.tag,
+                goods.gname,
+                goods.img
+                from orders left join goods on orders.gid = goods.gid
+                where orders.oid=#{oid}
+    </select>
+    <select id="findConsignmentOrdersVO" resultType="com.cy.store.vo.OrdersVO">
+          select  orders.oid,
+                orders.sellid,
+                orders.buyid,
+                orders.name,
+                orders.phone,
+                orders.content,
+                orders.gid,
+                orders.price,
+                orders.status,
+                orders.ctime,
+                orders.tag,
+                goods.gname,
+                goods.img
+                from orders left join goods on orders.gid = goods.gid
+                where orders.tag=1
+                order by orders.status,orders.ctime desc
+    </select>
+    <select id="findAllOrdersVO" resultType="com.cy.store.vo.OrdersVO">
+         select  orders.oid,
+                orders.sellid,
+                orders.buyid,
+                orders.name,
+                orders.phone,
+                orders.content,
+                orders.gid,
+                orders.price,
+                orders.status,
+                orders.ctime,
+                orders.tag,
+                goods.gname,
+                goods.img
+                from orders left join goods on orders.gid = goods.gid
+                order by orders.ctime desc
+    </select>
+
+
+</mapper>

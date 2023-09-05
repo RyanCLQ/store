@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.GoodsMapper">
+
+    <insert id="insert">
+        INSERT INTO goods(cid,uid,gname,price,ctime,gdescribe,img,status,tag) VALUES(#{cid},#{uid},#{gname},#{price},#{ctime},#{gdescribe},#{img},#{status},#{tag})
+    </insert>
+    <update id="setOn">
+        update goods set status = 1 where gid = #{gid}
+    </update>
+    <update id="setOff">
+        update goods set status = 2 where gid = #{gid}
+    </update>
+    <update id="updateGoods">
+        update goods set cid=#{cid},gname=#{gname},price=#{price},gdescribe=#{gdescribe},tag=#{tag} where gid = #{gid}
+    </update>
+    <select id="findByCid" resultType="com.cy.store.entity.Goods">
+        select * from goods where cid = #{cid} and status = 1 order by ctime desc
+    </select>
+    <select id="findByUid" resultType="com.cy.store.entity.Goods">
+         select * from goods where uid = #{uid} order by ctime
+    </select>
+    <select id="findNewGoods" resultType="com.cy.store.entity.Goods">
+        select * from goods where status = 1 order by ctime desc limit 0,3
+    </select>
+    <select id="findByGid" resultType="com.cy.store.entity.Goods">
+        select * from goods where gid=#{gid}
+    </select>
+    <select id="findByGids" resultType="com.cy.store.entity.Goods">
+        select * from goods
+        where gid in (
+        <foreach collection="array" item="gid" separator=",">
+            #{gid}
+        </foreach>
+        )
+    </select>
+    <select id="searchByGname" resultType="com.cy.store.entity.Goods">
+         select * from goods where gname like #{gname} and status=1
+    </select>
+    <select id="findVOByGid" resultType="com.cy.store.vo.GoodsVO">
+          select    goods.gid,
+                    goods.cid,
+                    goods.uid,
+                    goods.gname,
+                    goods.price,
+                    goods.ctime,
+                    goods.gdescribe,
+                    goods.img,
+                    goods.status,
+                    goods.tag,
+                    user.username,
+                    user.phone,
+                    user.point,
+                    user.gnum
+                from goods left join user on goods.uid = user.uid
+                where goods.gid=#{gid}
+                order by goods.ctime desc
+    </select>
+    <select id="findGoodsExamine" resultType="com.cy.store.entity.Goods">
+         select * from goods where status=0 order by ctime desc
+    </select>
+</mapper>
