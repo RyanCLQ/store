@@ -1,0 +1,111 @@
+create table user
+( uid char(15) primary key not null,/*用户号即学号，登录用学号*/
+  username char(20),/*用户名*/
+  pwd char(32),/*密码*/
+  salt char(36),/*盐值，用于加密密码*/
+  phone char(15),/*手机号码*/
+  ctime datetime,/*创建用户的时间*/
+  gnum int,/*二手商品的数量*/
+  point int,/*信誉分*/
+  status int/*账号状态，0是正常，1是被冻结*/
+);
+create table admin
+( aid char(15) primary key not null,/*管理员号 也用学号*/
+  username char(20),/*管理员名*/
+  pwd char(32),/*密码*/
+  salt char(36),/*盐值，用于加密密码*/
+  phone char(15),/*手机号*/
+  role int /*角色，分为普通管理员0和超级管理员1，普通管理员注册需要超级管理员的账号和密码，超级管理员不能增加，只有最初设定的几个*/
+);
+create table catelog
+( cid int  primary key not null AUTO_INCREMENT, /*分类号自增*/
+  name char(20),/*分类名*/
+  number int,/*分类下的商品数量*/
+  status int/*分类状态，0是正常，1是禁用*/
+);
+create table goods
+( gid int primary key not null AUTO_INCREMENT,/*商品号 自增*/
+  cid int,/*分类号*/
+  uid char(15),/*用户号*/
+  gname char(50),/*商品名*/
+  price float,/*价格*/
+  ctime datetime,/*创建时间*/
+  gdescribe text,/*商品描述*/
+  img char(100),/*图片地址*/
+  status int,/*商品状态，0是待审核，1待销售，2是下架*/
+  tag int/*0是普通商品，1是寄卖商品*/
+);
+
+create table focus
+( fid int not null AUTO_INCREMENT, /*关注记录号自增*/
+  gid int,/*商品号*/
+  uid char(15),/*用户号*/
+  primary key(fid)
+);
+create table orders
+( oid int not null AUTO_INCREMENT, /*订单号自增*/
+  gid int,/*商品号*/
+  sellid char(15),/*用户号 卖家*/
+  buyid char(15),/*用户号 买家*/
+  name char(20),/*收货人名*/
+  phone char(15),/*收货人手机*/
+  content text,/*具体地址*/
+  price float,/*成交价格*/
+  status int,/*订单状态 0是未发货，1是已发货，2是确认收货，3是投诉中，4是已退款*/
+  ctime datetime,/*创建时间*/
+  tag int,/*0是普通商品，1是寄卖商品*/
+  primary key(oid)
+);
+create table address/*一个用户所能拥有的最多地址数是5，新增第一条地址时把该地址设置为默认地址*/
+( adsid int not null AUTO_INCREMENT, /*地址号自增*/
+  uid  char(15),/*用户号*/
+  name char(20),/*收货人名*/
+  phone char(15),/*收货人手机号码*/
+  content text,/*具体地址*/
+  status int,/*地址状态 0是默认，1是非默认*/
+  ctime datetime,/*创建时间*/
+  primary key(adsid)
+);
+/*因为是二手商城，买家基本上只有一件相同的商品，不会有买过的用户来评价的需求，交流的话提供卖家的联系方式就行了，没有必要写一个网页端的交流模块，卖家又没有客服*/
+/*create table comment
+( comid int not null AUTO_INCREMENT, 
+  gid int,
+  uid char(15),
+  content text,
+  ctime datetime,
+  primary key(comid)
+);*/
+
+create table notice
+( nid int not null AUTO_INCREMENT, /*通知号自增*/
+  aid char(15),/*用户号 管理员*/
+  content text,/*通知内容*/
+  ctime datetime,/*创建时间*/
+  primary key(nid)
+);
+create table complaint
+( cptid int not null AUTO_INCREMENT, /*投诉号自增*/
+  oid int,/*订单号*/
+  reason text,/*投诉原因*/
+  img char(100),/*投诉图片*/
+  status int,/*投诉的状态，0待处理，1已处理*/
+  ctime datetime,/*创建时间*/
+  primary key(cptid)
+);
+create table cart
+( ctid int primary key not null AUTO_INCREMENT,/*购物车记录号自增*/
+  uid char(15),/*用户号，一个用户一个购物车*/
+  gid int,/*这条记录的商品*/
+  price float,/*价格，用于统计总价*/
+  ctime datetime	/*创建时间*/
+)
+INSERT INTO catelog(name,number,status) VALUES('闲置数码',0,0);
+INSERT INTO catelog(name,number,status) VALUES('校园代步',0,0);
+INSERT INTO catelog(name,number,status) VALUES('电器自用',0,0);
+INSERT INTO catelog(name,number,status) VALUES('图书教材',0,0);
+INSERT INTO catelog(name,number,status) VALUES('美妆衣物',0,0);
+INSERT INTO catelog(name,number,status) VALUES('运动棋牌',0,0);
+INSERT INTO catelog(name,number,status) VALUES('票券小物',0,0);
+
+
+7天后订单自动变为确认收货状态（不用实现）
